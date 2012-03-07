@@ -33,7 +33,9 @@ public class Menu extends JFrame
         setResizable(false);
         //Make the menu visible
         setVisible(true);
+        //Set layout
         setLayout(new GridLayout(6, 0, 5, 5));
+        //Add buttons
         add(new JButton("New Game"));
         add(new JButton("Load"));
         add(new JButton("Custom Levels"));
