@@ -6,8 +6,9 @@ package golf;
 
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import javax.swing.JButton;
-import javax.swing.JFrame;
+import java.awt.event.*;
+
+import javax.swing.*;
 
 /**
  * @author Paul
@@ -16,6 +17,7 @@ public class Menu extends JFrame
 {
     private final int WIDTH = 200;
     private final int HEIGHT = 300;
+    private JButton exit;
     
     /**
      * Constructor for the menu, initialises the whole game
@@ -41,13 +43,31 @@ public class Menu extends JFrame
         add(new JButton("Custom Levels"));
         add(new JButton("Options"));
         add(new JButton("Credits"));
-        add(new JButton("Exit"));
+        
+        exit = new JButton("Exit");
+        exit.addActionListener(new ButtonListener("exit"));
+
+        add(exit);
         
     }
     
     /**
      * Main method, creates a new menu for the game
      */
+    private class ButtonListener implements ActionListener{
+    	private String action;
+    	
+    	public ButtonListener(String action){
+    		this.action = action;
+    	}
+    	
+    	public void actionPerformed(ActionEvent event){
+    		if (action.equals("exit")){
+    			System.exit(0);
+    		}
+    	}
+
+    }
     public static void main(String[] args)
     {
         new Menu();
