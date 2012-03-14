@@ -52,14 +52,14 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
         //Whether the ScreenDrawer class is drawing (Used for stopping the thread)
         private boolean isActive = true;
         
-	public Editor(int xSize, int ySize){
+	public Editor(LevelDescription startLevel){
                 editor = this;
 		
 		tileMap = new ArrayList<EditorTile>();
 		
 		brush = TileType.GRASS;
 		
-		level = new LevelDescription("My Custom Level", xSize, ySize, new ArrayList<TileType>(), 1, 1, 4);
+		level = startLevel;
                 
                 //Create the File Chooser
                 fileChooser = new JFileChooser();
@@ -80,7 +80,13 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
 	
         public Editor()
         {
-            new Editor(15, 15);
+            int standardXSize = 20;
+            int standardYSize = 20;
+            ArrayList<TileType> standardTiles = new ArrayList<TileType>();
+            for(int i=0; i<standardXSize * standardYSize; i++) {
+                standardTiles.add(TileType.GRASS);
+            }
+            new Editor(new LevelDescription("My Custom Level", 15, 15, standardTiles, 1, 1, 4));
         }
         
 	public void makeFrame(){
@@ -210,7 +216,7 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
 	private void setMap(){
 		for(int i=0; i<(level.getWidth()*level.getHeight()); i++)
 		{
-				this.tileMap.get(i).setType(level.getTiles().get(i));
+                        this.tileMap.get(i).setType(level.getTiles().get(i));
 		}
 		redraw();
 	}
@@ -293,8 +299,6 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
                     ObjectInputStream input = new ObjectInputStream(fis);
                     
                     //Temp vars for width and height of the old level to compare against
-                    int oldWidth = level.getWidth();
-                    int oldHeight = level.getHeight();
                     this.level = (LevelDescription) input.readObject();
                     
                     /*if(level.getHeight() == oldHeight && level.getWidth() == oldWidth) {
@@ -307,10 +311,13 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
                             setMap();
                     }
 */
-                    Editor e = new Editor();
+                    //new Editor(level);
+                    makeFrame();
+                    initMap();
+                    setMap();
+                    //isActive = false;
+                    //frame.dispose();
                     //e.setLevel();
-                    isActive = false;
-                    frame.dispose();
                     
                     input.close();
                     fis.close();
@@ -541,10 +548,22 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
                                                                     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
                                                                     null, options, options[0]);
                                                         if(n==JOptionPane.YES_OPTION) {
-                                                                //level.setWidth(Integer.parseInt(widthField.getText()));
-                                                                //level.setHeight(Integer.parseInt(heightField.getText()));
+                                                            int newX = Integer.parseInt(widthField.getText());
+                                                            int newY = Integer.parseInt(heightField.getText());
+                                                            
+                                                            ArrayList<TileType> tempTiles = new ArrayList<TileType>();
+                                                            for(int i=0; i<newX*newY; i++) {
+                                                                tempTiles.add(TileType.GRASS);
+                                                            }
+                                                            new Editor(new LevelDescription(level.getName(),
+                                                                    newX,
+                                                                    newY,
+                                                                    tempTiles, 
+                                                                    1,
+                                                                    1,
+                                                                    level.getPar()));
+                                                            
                                                             isActive = false;
-                                                            new Editor(Integer.parseInt(widthField.getText()), Integer.parseInt(heightField.getText()));
                                                             editor.frame.dispose();
                                                         }
                                                 frame.dispose();
