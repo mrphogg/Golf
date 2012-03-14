@@ -12,10 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.*;
 import javax.swing.JFrame;
 import java.util.ArrayList;
@@ -47,7 +44,7 @@ public class GameManager extends JFrame
     //How many levels have been unlocked
     private int maxLevel = 10;
     //How many levels are created
-    private int levelCount = 10;
+    private int levelCount = 2;
     
     //Arraylist of level descriptions
     private ArrayList<LevelDescription> levels;
@@ -149,10 +146,7 @@ public class GameManager extends JFrame
                     @Override
                     public void actionPerformed(ActionEvent ae)
                     {
-                        if(selectedLevel > 1) {
-                            selectedLevel--;
-                        }
-                        updateLevelLabels();
+                        selectPreviousLevel();
                     }
                     
                 });
@@ -168,10 +162,7 @@ public class GameManager extends JFrame
                     @Override
                     public void actionPerformed(ActionEvent ae)
                     {
-                        if(selectedLevel < levels.size() && selectedLevel < maxLevel) {
-                            selectedLevel++;
-                        }
-                        updateLevelLabels();
+                        selectNextLevel();
                     }
                     
                 });
@@ -194,6 +185,28 @@ public class GameManager extends JFrame
     }
     
     /**
+     * Selects the previous level if it exists and then updates the display
+     */
+    private void selectPreviousLevel()
+    {
+        if(selectedLevel > 1) {
+            selectedLevel--;
+        }
+        updateLevelLabels();
+    }
+    
+    /**
+     * Selects the next level if it exists and then updates the display
+     */
+    private void selectNextLevel()
+    {
+        if(selectedLevel < levels.size() && selectedLevel < maxLevel) {
+            selectedLevel++;
+        }
+        updateLevelLabels();
+    }
+    
+    /**
      * Exits the current level (Usually is called from the actual current level)
      * If the game was exited because the player won, the par-amater
      * represents how many hits the player made.
@@ -206,7 +219,7 @@ public class GameManager extends JFrame
         System.out.println(levelScores.get(selectedLevel-1));
         if(par >= 0) {
             //If the level's never been played before
-            if(levelScores.get(selectedLevel-1) == -1) {
+            if(levelScores.get(selectedLevel-1) == 0) {
                 levelScores.set(selectedLevel - 1, par);
             } else if(par < levelScores.get(selectedLevel-1)) {
                 levelScores.set(selectedLevel-1, par);
@@ -222,7 +235,7 @@ public class GameManager extends JFrame
     }
     
     /**
-     * Updates the labels in the frame (Level description and total score)
+     * Updates the labels in the frame (Level description and par)
      */
     private void updateLevelLabels()
     {
@@ -243,11 +256,13 @@ public class GameManager extends JFrame
      * Populates the levels array with all the LevelDescription objects of the
      * levels in the game.
      * 
-     * For now just creates 1 fake level 20x20 full of grass
+     * Game levels are located in levels/l[0-n].lvl
+     * 
+     * Only loads in levelCount levels
      */
     private void setupLevels() throws FileNotFoundException, IOException, ClassNotFoundException
     {
-        for(int i=1; i<levelCount; i++) {
+        for(int i=1; i<=levelCount; i++) {
             String levelFileName = "levels/l"+i+".lvl";
             FileInputStream fis = new FileInputStream(levelFileName);
             ObjectInputStream input = new ObjectInputStream(fis);
@@ -260,5 +275,34 @@ public class GameManager extends JFrame
 
             levels.add(level);
         }
+    }
+    
+    /**
+     * Class for the GameManager frame that handles the pressing of buttons (eg. Selects
+     * different levels by pressing left, right, A & D and plays the level by pressing
+     * space)
+     */
+    private class GameManagerKeyListener implements KeyListener
+    {
+
+        @Override
+        public void keyTyped(KeyEvent e){}
+
+        @Override
+        public void keyPressed(KeyEvent e)
+        {
+            int key = e.getKeyCode();
+            if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
+                selectPreviousLevel();
+            } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
+                selectNextLevel();
+            } else if(key == KeyEvent.VK_SPACE) {
+                playSelectedLevel();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e){}
+        
     }
 }
