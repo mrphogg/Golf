@@ -230,6 +230,9 @@ public class Editor extends JPanel implements MouseListener, MouseMotionListener
         for (int i = 0; i < (level.getWidth() * level.getHeight()); i++) {
             this.tileMap.get(i).setType(TileType.GRASS);
         }
+        //reset ball x and y
+        level.setBallX(1);
+        level.setBallY(1);
         //drawScreen();
     }
 

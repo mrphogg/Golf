@@ -193,8 +193,8 @@ public class Game extends JFrame
                 }
             }
         }
-        //Set correct ball position
         
+        //Set correct ball position
         ball.setX((level.getBallX()-1)*25+5);
         ball.setY((level.getBallY()-1)*25+5);
         ball.resetSpeed();
@@ -272,19 +272,32 @@ public class Game extends JFrame
                         if(t instanceof Wall || (t instanceof SwitchWall && ((SwitchWall)t).isSwitchedOn())) {
                             //Left side of ball
                             if(t.contains(ball.getX(),ball.getCentreY())) {
+                                
                                 ball.flipXSpeed();
+                                while(t.contains(ball.getX(), ball.getCentreY())) {
+                                    ball.setX(ball.getX()+0.5);
+                                }
                             }
                             //Right side of ball
                             if(t.contains(ball.getMaxX(),ball.getCentreY())) {
                                 ball.flipXSpeed();
+                                while(t.contains(ball.getMaxX(), ball.getCentreY())) {
+                                    ball.setX(ball.getX()-0.5);
+                                }
                             }
                             //Top side of ball
                             if(t.contains(ball.getCentreX(),ball.getY())) {
                                 ball.flipYSpeed();
+                                while(t.contains(ball.getCentreX(), ball.getY())) {
+                                    ball.setY(ball.getY()+0.5);
+                                }
                             }
                             //Bottom side of ball
                             if(t.contains(ball.getCentreX(),ball.getMaxY())) {
                                 ball.flipYSpeed();
+                                while(t.contains(ball.getCentreX(), ball.getMaxY())) {
+                                    ball.setY(ball.getY()-0.5);
+                                }
                             }   
                         }
                         //Pull the ball into a blackhole
@@ -501,9 +514,11 @@ public class Game extends JFrame
             //Shoot the ball
             if(key == KeyEvent.VK_SPACE) {
                 if(game.aimingStage == AimingStage.NOT_AIMING) {
-                    //If ball is still enough to be hit
+                    //If ball is stationary enough to be hit
                     if(game.ball.getSpeed() < 0.1) {
                         game.aimingStage = AimingStage.AIMING_DIRECTION;
+                        //Stop ball from moving at all
+                        game.ball.resetSpeed();
                     }
                 } else if(game.aimingStage == AimingStage.AIMING_DIRECTION) {
                     //Change from aiming direction to aiming speed

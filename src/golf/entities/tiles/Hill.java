@@ -9,7 +9,7 @@ import golf.entities.TileType;
 
 /**
  *
- * @author User
+ * @author Paul
  */
 public class Hill extends Tile
 {

@@ -68,10 +68,10 @@ public class Ball extends GameEntity
     @Override
     public void update()
     {
-        setX(getX() + xSpeed);
-        setY(getY() + ySpeed);
         xSpeed *= friction;
         ySpeed *= friction;
+        setX(getX() + xSpeed);
+        setY(getY() + ySpeed);
     }
     
     /**

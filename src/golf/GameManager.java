@@ -92,6 +92,11 @@ public class GameManager extends JFrame
             @Override
             public void windowDeactivated(WindowEvent we){}
         });
+        //Add key listener to frame to use arrow keys to select level
+        addKeyListener(new GameManagerKeyListener());
+        //Set frame to focuasable so the key listener works
+        setFocusable(true);
+        
         //Create the levels array
         levels = new ArrayList<LevelDescription>();
         
@@ -284,14 +289,21 @@ public class GameManager extends JFrame
      */
     private class GameManagerKeyListener implements KeyListener
     {
-
+        
+        public GameManagerKeyListener()
+        {
+            
+        }
+        
         @Override
         public void keyTyped(KeyEvent e){}
 
         @Override
         public void keyPressed(KeyEvent e)
         {
+            
             int key = e.getKeyCode();
+            System.out.println(key);
             if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
                 selectPreviousLevel();
             } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
